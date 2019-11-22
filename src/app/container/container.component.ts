@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestaurantSearchService } from '../restaurant-search.service'; 
 import { SearchResult } from '../pageelements/result';
+import { FacetCuisine } from '../pageelements/facet-cuisine';
+import { fromEvent} from 'rxjs';
 
 
 @Component({
@@ -14,35 +16,25 @@ export class ContainerComponent implements OnInit {
   @ViewChild('facetCuisineLoadingOverlay',{static:false}) facetCuisineLoadingOverlay;  
   @ViewChild('facetCuisineContent',{static:false}) facetCuisineContent; 
   @ViewChild('noResultFound',{static:false}) noResultFound; 
-
+  @ViewChild('toTopButton',{static:false}) toTopButton;
   viewInit: boolean; 
   searchStr: string; 
   currentSearch: any;
   objectKeys: any; 
-  facetCuisineFromSearch: object; 
-  isFacetCuisineActive: boolean; 
-  activeFacetCuisine: string; 
-  facetCuisineToDisplay: object; 
-  facetNameInDescendingOrder: []; 
-  facetCuisinePerPage: number; 
-  updateFacetCuisine: boolean; 
-  showMore: boolean; 
   Math: any;
   Arr: any;
   result: any; 
+  facetCuisine: any; 
+  observerScrollResult: any; 
+  subscriberScrollResult: any; 
   constructor(private restaurantSearchService: RestaurantSearchService) {
     this.searchStr = ""; 
     this.Math = Math; 
     this.Arr = Array; 
     this.objectKeys = Object.keys; 
-    this.facetCuisineFromSearch = {}; 
-    this.isFacetCuisineActive = false;
-    this.activeFacetCuisine = ''; 
-    this.facetCuisineToDisplay = {}
-    this.facetCuisinePerPage = 4; 
-    this.updateFacetCuisine = false;
     this.viewInit = false; 
     this.result = new SearchResult(); 
+    this.facetCuisine = new FacetCuisine(); 
   }
 
   ngOnInit() {
@@ -60,75 +52,53 @@ export class ContainerComponent implements OnInit {
 
   search() {
     this.result.resetParems(); 
-    this.updateFacetCuisine = true; 
+    this.facetCuisine.changeUpdateStatus(true); 
     // get algolia search helper
     this.currentSearch = this.restaurantSearchService.getHelper(); 
     // toggle refinement
-    if  (!this.isFacetCuisineActive) {
-      this.facetCuisineToDisplay = {}; 
+    if  (!this.facetCuisine.isFacetCuisineActive) {
+      this.facetCuisine.facetCuisineToDisplay = {}; 
     } else {
-      this.currentSearch.toggleFacetRefinement('info.food_type',this.activeFacetCuisine); 
+      this.currentSearch.toggleFacetRefinement('info.food_type',this.facetCuisine.activeFacetCuisine); 
     }
-
     // on search callback 
     this.currentSearch.on('search',function(content) {
       if (this.viewInit) {
         this.noResultFound.nativeElement.style.display = "none"; 
       }
-      if (this.updateFacetCuisine&&this.viewInit&&!this.isFacetCuisineActive) {
+      if (this.facetCuisine.updateFacetCuisine&&this.viewInit&&!this.facetCuisine.isFacetCuisineActive) {
           this.facetCuisineLoadingOverlay.nativeElement.style.zIndex = "1";  
       } 
     }.bind(this)); 
 
-    // Call back when get search result
+    // on result callback
     this.currentSearch.on('result', function(content) {
       if (!this.viewInit) {
         this.viewInit = true; 
+        this.observerScrollResult = fromEvent(this.resultLists.nativeElement,'scroll'); 
+        this.subscriberScrollResult = this.observerScrollResult.subscribe(function(evt) {
+          if (this.resultLists.nativeElement.scrollTop>0) {
+            this.toTopButton.nativeElement.style.opacity = 1; 
+          } else {
+            this.toTopButton.nativeElement.style.opacity = 0; 
+          }
+        }.bind(this)); 
       }
-      this.result.updateResult(content); 
+      this.result.update(content); 
       if (!this.result.isLoadMore) {
-        if (this.result.numHits>0) {
-          this.facetCuisineFromSearch = content.facets[0].data;
-          this.facetNameInDescendingOrder = Object.keys(this.facetCuisineFromSearch)
-                                                  .sort(function(a,b){return this.facetCuisineFromSearch[b]-this.facetCuisineFromSearch[a]}.bind(this)); 
-          // initialize facet cuisine to display                                        
-          if (!this.isFacetCuisineActive) {
-            if (this.facetNameInDescendingOrder.length > this.facetCuisinePerPage) {
-              this.showMore = true; 
-              for (var i = 0; i<this.facetCuisinePerPage; i++) {
-                let facetName = this.facetNameInDescendingOrder[i]; 
-                this.facetCuisineToDisplay[facetName] = this.facetCuisineFromSearch[facetName]; 
-              }
-            } else {
-              this.showMore = false; 
-              for (var i = 0; i<this.facetNameInDescendingOrder.length; i++) {
-                let facetName = this.facetNameInDescendingOrder[i]; 
-                this.facetCuisineToDisplay[facetName] = this.facetCuisineFromSearch[facetName]; 
-              }
-            }
-          } else {
-            this.facetCuisineToDisplay[this.activeFacetCuisine] = this.facetCuisineFromSearch[this.activeFacetCuisine]; 
-          }
-        } else {
-          this.showMore = false; 
-          this.facetCuisineFromSearch = {}; 
-          this.facetNameInDescendingOrder = []; 
-          if  (!this.isFacetCuisineActive) {
-            this.facetCuisineToDisplay = {}; 
-          } else {
-            this.facetCuisineToDisplay[this.activeFacetCuisine] = 0; 
-          }
-          this.noResultFound.nativeElement.style.display = "block"; 
-        }
+        // if search is not load more, update facet
+        this.facetCuisine.update(this.result.numHits, content);
+        if (this.result.numHits==0) {
+          this.noResultFound.nativeElement.style.display = "block";
+        } 
       } else {
         setTimeout(function() {
           this.resultLists.nativeElement.lastElementChild.scrollIntoView({ behavior: 'smooth' });
         }.bind(this),200); 
       }
-
       // disable loading overlay
       setTimeout(function() {
-        if (this.updateFacetCuisine && !this.isFacetCuisineActive) {
+        if (this.facetCuisine.updateFacetCuisine && !this.isFacetCuisineActive) {
           this.facetCuisineLoadingOverlay.nativeElement.style.zIndex = "-1";
           this.updateFacetCuisine = false; 
         }
@@ -139,7 +109,7 @@ export class ContainerComponent implements OnInit {
 
   loadMoreResults() {
     this.result.changeLoadMoreStatus(true); 
-    this.updateFacetCuisine = false; 
+    this.facetCuisine.changeUpdateStatus(false); 
     this.currentSearch.setPage(this.result.currentPage).search(); 
   }
 
@@ -147,9 +117,7 @@ export class ContainerComponent implements OnInit {
     let clazz = elRef.getAttribute("class"); 
     this.result.resetParems(); 
     if (clazz.includes("facet-active")) {
-      this.facetCuisineToDisplay = {};
-      this.isFacetCuisineActive = false; 
-      this.activeFacetCuisine = ''; 
+      this.facetCuisine.resetParems(); 
       this.facetCuisineContent.nativeElement
       .querySelectorAll(".facet-item")
       .forEach(item => {
@@ -157,34 +125,18 @@ export class ContainerComponent implements OnInit {
       });
       this.currentSearch.clearRefinements('info.food_type').search();
     } else {
-      this.isFacetCuisineActive = true; 
-      this.showMore = true; 
-      this.activeFacetCuisine = facet; 
+      this.facetCuisine.activateFacet(facet); 
       elRef.setAttribute("class","facet-item enable facet-active");
-      this.facetCuisineToDisplay[facet] = this.facetCuisineFromSearch[facet]; 
       this.facetCuisineContent.nativeElement
           .querySelectorAll(".facet-item:not(.facet-active)")
           .forEach(item => {
             item.setAttribute("class","facet-item disable"); 
           });
-      this.currentSearch.toggleFacetRefinement('info.food_type',this.activeFacetCuisine).search(); 
+      this.currentSearch.toggleFacetRefinement('info.food_type',this.facetCuisine.activeFacetCuisine).search(); 
     }
   }
 
-  showMoreFacet() {
-    let numFacetDisplayed = Object.keys(this.facetCuisineToDisplay).length; 
-    let numAllFacets = this.facetNameInDescendingOrder.length; 
-    if ((numFacetDisplayed+this.facetCuisinePerPage)<numAllFacets) {
-      for (var i = numFacetDisplayed; i<(numFacetDisplayed+this.facetCuisinePerPage); i++) {
-        let facetName = this.facetNameInDescendingOrder[i]; 
-        this.facetCuisineToDisplay[facetName] = this.facetCuisineFromSearch[facetName]; 
-      }
-    } else {
-      this.showMore = false; 
-      for (var i = numFacetDisplayed; i<numAllFacets; i++) {
-        let facetName = this.facetNameInDescendingOrder[i]; 
-        this.facetCuisineToDisplay[facetName] = this.facetCuisineFromSearch[facetName]; 
-      }
-    }
+  scrollToTop() {
+    this.resultLists.nativeElement.firstElementChild.scrollIntoView({ behavior: 'smooth' });
   }
 }

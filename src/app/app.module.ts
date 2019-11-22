@@ -7,7 +7,7 @@ import { RestaurantSearchService} from './restaurant-search.service';
 import { ImageLoaderDirective } from './image-loader.directive';
 import { TimelinePreloaderComponent } from './timeline-preloader/timeline-preloader.component';
 import { HitTimelinePreloaderDirective } from './hit-timeline-preloader.directive';
-
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,7 +18,8 @@ import { HitTimelinePreloaderDirective } from './hit-timeline-preloader.directiv
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    AngularFontAwesomeModule
   ],
   providers: [RestaurantSearchService],
   bootstrap: [AppComponent]

@@ -14,11 +14,11 @@
                     </div>
                     <div class="facet-cuisine-content">
                         <div #facetCuisineContent class="facet-content">
-                            <div #refEl class="facet-item enable" *ngFor="let facet of objectKeys(facetCuisineToDisplay)" (click)=refineByCuisine(refEl,facet)>
+                            <div #refEl class="facet-item enable" *ngFor="let facet of objectKeys(facetCuisine.facetCuisineToDisplay)" (click)=refineByCuisine(refEl,facet)>
                                 <div class="facet-item-name">{{facet}}</div>
-                                <div class="facet-item-numhits">{{facetCuisineToDisplay[facet]}}</div>
+                                <div class="facet-item-numhits">{{facetCuisine.facetCuisineToDisplay[facet]}}</div>
                             </div>
-                            <div class="facet-item enable see-more-facet" *ngIf="showMore" (click)="showMoreFacet()">
+                            <div class="facet-item enable see-more-facet" *ngIf="facetCuisine.showMore" (click)="facetCuisine.showMoreFacet()">
                                 <div class="facet-item-name" title="Click to see more facet"><b>More ...</b></div>
                             </div>
                         </div>
@@ -148,10 +148,9 @@
                             </div>
                             <app-timeline-preloader></app-timeline-preloader>
                         </div>
-                        <div class="show-more" [ngStyle]="result.showLoadMoreButton?{'margin-top':'20px','display':'flex','justify-content':'center'}:{'display':'none'}" (click)="loadMoreResults()">
-                            <div class="show-more-btn" title="Click to see more results">Show more</div>
+                        <div class="show-more" [ngStyle]="result.showLoadMoreButton?{'margin-top':'20px','display':'flex','justify-content':'center'}:{'display':'none'}">
+                            <div class="show-more-btn" title="Click to see more results" (click)="loadMoreResults()">Show more</div>
                         </div>
-                        <!-- <app-timeline-preloader></app-timeline-preloader> -->
                     </div>
                     <div #noResultFound class="no-result-found">
                         Sorry, we couldn't any restaurant for "{{this.searchStr}}"", please modify your search or try some suggestions: 
@@ -161,6 +160,7 @@
                             <li class="suggestion" (click)="suggestionSearch('French')">French</li>
                           </ul> 
                     </div>
+                    <div #toTopButton id="toTopButton" (click)="scrollToTop()"></div>
                 </div>
             </div>
         </div>

@@ -26,7 +26,7 @@ export class SearchResult {
         this.isLoadMore = flag; 
     }
 
-    updateResult(content:any) {
+    update(content:any) {
         this.currentPage++; 
         if (!this.isLoadMore) {
             this.numHits = content.nbHits; 

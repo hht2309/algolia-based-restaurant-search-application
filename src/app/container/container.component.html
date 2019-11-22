@@ -1,0 +1,168 @@
+<div class="container">
+    <div class="header">
+        <input [(ngModel)]="searchStr" (keyup)=search() autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text" name="searchStr" class="search-input" placeholder="Search for Restaurants by Name, Cuisine, Location"/>
+    </div>
+    <div class="main">
+        <div class="left">
+            <div #facetCuisineLoadingOverlay class="loading-overlay">
+                <div class="lds-ring active"><div></div><div></div><div></div><div></div></div>
+            </div>
+            <div class="facets-container">
+                <div class="facet-cuisine">
+                    <div class="facet-cuisine-title">
+                        <b class="large-text">Cuisine/Food type</b>
+                    </div>
+                    <div class="facet-cuisine-content">
+                        <div #facetCuisineContent class="facet-content">
+                            <div #refEl class="facet-item enable" *ngFor="let facet of objectKeys(facetCuisineToDisplay)" (click)=refineByCuisine(refEl,facet)>
+                                <div class="facet-item-name">{{facet}}</div>
+                                <div class="facet-item-numhits">{{facetCuisineToDisplay[facet]}}</div>
+                            </div>
+                            <div class="facet-item enable see-more-facet" *ngIf="showMore" (click)="showMoreFacet()">
+                                <div class="facet-item-name" title="Click to see more facet"><b>More ...</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="facet-rating">
+                    <div class="facet-title">
+                        <b class="large-text">Rating</b>
+                    </div>
+                    <div class="facet-content">
+                        <div class="facet-item enable">
+                                <div class="facet-item-name stars-group">
+                                    <div *ngFor="let i of Arr(1).fill(1)" class="stars-icon">
+                                        <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
+                                    </div>
+                                    <div *ngFor="let i of Arr(4).fill(1)" class="stars-icon">
+                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="facet-item enable">
+                                <div class="facet-item-name stars-group">
+                                    <div *ngFor="let i of Arr(2).fill()" class="stars-icon">
+                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
+                                        </div>
+                                        <div *ngFor="let i of Arr(3).fill(1)" class="stars-icon">
+                                                <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="facet-item enable">
+                                <div class="facet-item-name stars-group">
+                                    <div *ngFor="let i of Arr(3).fill(1)" class="stars-icon">
+                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
+                                        </div>
+                                        <div *ngFor="let i of Arr(2).fill(1)" class="stars-icon">
+                                                <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="facet-item enable">
+                                <div class="facet-item-name stars-group">
+                                    <div *ngFor="let i of Arr(4).fill(1)" class="stars-icon">
+                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
+                                        </div>
+                                        <div *ngFor="let i of Arr(1).fill(1)" class="stars-icon">
+                                                <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="facet-item enable">
+                                <div class="facet-item-name stars-group">
+                                    <div *ngFor="let i of Arr(5).fill(1)" class="stars-icon">
+                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="facet-payment">
+                    <div class="facet-title">
+                        <b class="large-text">Payment Options</b>
+                    </div>
+                    <div class="facet-content">
+                        <div class="facet-item enable">
+                            <div class="facet-item-name">AMEX</div>
+                            <div class="facet-item-numhits">70</div>
+                        </div>
+                        <div class="facet-item enable">
+                            <div class="facet-item-name">Discover</div>
+                            <div class="facet-item-numhits">60</div>
+                        </div>
+                        <div class="facet-item enable">
+                            <div class="facet-item-name">MasterCard</div>
+                            <div class="facet-item-numhits">50</div>
+                        </div>
+                        <div class="facet-item enable">
+                            <div class="facet-item-name">Visa</div>
+                            <div class="facet-item-numhits">30</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div #resultLoadingOverlay class="loading-overlay">
+                    <div class="lds-ring active"><div></div><div></div><div></div><div></div></div>
+            </div>
+            <div id="results">
+                <div class="display-results">
+                    <div class="search-stats">
+                        <div class="search-stats-text">
+                            <b class="large-text">{{result.numHits}} results found</b> in {{result.processingTime}}  seconds
+                        </div>
+                        <div class="search-stats-line"></div>
+                    </div>
+                    <div class="tags-container"></div>
+                    <div #resultLists class="result-lists">
+                        <div class="restaurant-hit-container" *ngFor="let restaurant of result.restaurantHits" appHitTimelinePreloader [imgURL]=restaurant.image_url>
+                            <div class="restaurant-hit">
+                                <div class="thumbnail-container" appImageLoader [imgURL]=restaurant.image_url>
+                                    <img class="thumbnail" style="max-width:100%;max-height:100%" src="{{restaurant.image_url}}"/>
+                                    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+                                </div>
+                                <div class="restaurant-info">
+                                    <div class="restaurant-name">
+                                        <b>{{restaurant.name}}</b>
+                                    </div>
+                                    <div class="restaurant-review">
+                                        <div class="stars-count">
+                                            {{restaurant.info.stars_count}}
+                                        </div>
+                                        <div *ngFor="let i of Arr(Math.round(restaurant.info.stars_count
+                                        )).fill(1)" class="stars-icon">
+                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
+                                        </div>
+                                        <div *ngFor="let i of Arr(5 - Math.round(restaurant.info.stars_count
+                                        )).fill(1)" class="stars-icon">
+                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
+                                        </div>
+                                        <div class="reviews-count">
+                                            ({{restaurant.info.reviews_count}} reviews)
+                                        </div>
+                                    </div>
+                                    <div class="restaurant-divers">{{restaurant.info.food_type}} | {{restaurant.area}} | {{restaurant.info.price_range}}</div>
+                                </div>
+                            </div>
+                            <app-timeline-preloader></app-timeline-preloader>
+                        </div>
+                        <div class="show-more" [ngStyle]="result.showLoadMoreButton?{'margin-top':'20px','display':'flex','justify-content':'center'}:{'display':'none'}" (click)="loadMoreResults()">
+                            <div class="show-more-btn" title="Click to see more results">Show more</div>
+                        </div>
+                        <!-- <app-timeline-preloader></app-timeline-preloader> -->
+                    </div>
+                    <div #noResultFound class="no-result-found">
+                        Sorry, we couldn't any restaurant for "{{this.searchStr}}"", please modify your search or try some suggestions: 
+                        <ul>
+                            <li class="suggestion" (click)="suggestionSearch('Sushi')">Sushi</li>
+                            <li class="suggestion" (click)="suggestionSearch('Steak')">Steak</li>
+                            <li class="suggestion" (click)="suggestionSearch('French')">French</li>
+                          </ul> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

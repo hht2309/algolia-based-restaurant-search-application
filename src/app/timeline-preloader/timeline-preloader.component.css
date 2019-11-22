@@ -1,0 +1,75 @@
+.timeline-item {
+    margin-top:20px;
+    height: 100px;
+    width: 600px;
+    border-radius: 5px;
+    background: #fff;
+    border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+}
+@keyframes placeHolderShimmer{
+    0%{
+        background-position: -468px 0
+    }
+    100%{
+        background-position: 468px 0
+    }
+}
+
+.animated-background {
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    background-size: 800px 104px;
+    height: 100%;
+    position: relative;
+    border-radius: 5px;
+}
+
+.background-masker {
+  display:flex; 
+  height: 100px;
+}
+
+.thumbnail-masker {
+    flex-basis: 100px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.space-masker{
+    flex-basis: 20px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    background:white;
+}
+.info-masker {
+    flex-grow: 1;
+    display: flex; 
+    flex-direction: column; 
+}
+.info-masker-line1{
+  flex-basis: 25%; 
+  height: 100%;
+}
+.info-masker-line2{
+  flex-basis: 10%; 
+  background:white;
+}
+.info-masker-line3{
+  flex-basis: 25%; 
+}
+.info-masker-line4{
+  flex-basis: 10%;
+  background:white;
+}
+.info-masker-line5{
+  flex-basis: 15%; 
+}
+.info-masker-line6{
+  flex-basis: 15%; 
+  background:white;
+}

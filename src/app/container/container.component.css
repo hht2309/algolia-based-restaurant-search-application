@@ -17,7 +17,7 @@
  
 
 .container {
-    height: 670px;
+    height: 680px;
     width: 1200px;
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -98,7 +98,7 @@
 
 .facet-cuisine-content {
     max-height: 90%;
-    result-lists: auto;
+    overflow: auto;
 }
 
 .facet-rating {
@@ -261,7 +261,7 @@
 
 .tags-container {
     height: 25px;
-    margin-top: 5px;
+    margin-top: 10px;
     display: flex; 
     flex-direction: row;
     margin-bottom: 10px;

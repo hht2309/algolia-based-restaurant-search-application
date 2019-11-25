@@ -11,6 +11,7 @@
     facetCuisinePerPage: number; 
     updateFacetCuisine: boolean; 
     showMore: boolean; 
+    elRef: any; 
 
     constructor() {
         this.facetCuisineFromSearch = {}; 
@@ -19,12 +20,15 @@
         this.facetCuisineToDisplay = {}
         this.facetCuisinePerPage = 4; 
         this.updateFacetCuisine = false;
+        this.elRef = null; 
     }
 
     resetParems() {
         this.facetCuisineToDisplay = {}; 
         this.isFacetCuisineActive = false; 
         this.activeFacetCuisine = ''; 
+        this.elRef.classList.remove("facet-active");
+        this.elRef = null; 
     }
 
     update(numHits: number, content: any) {
@@ -68,9 +72,10 @@
         this.updateFacetCuisine = isUpdate; 
     }
 
-    activateFacet(facet: string) {
+    activateFacet(facet: string, elRef: any) {
         this.isFacetCuisineActive = true; 
         this.activeFacetCuisine = facet; 
+        this.elRef = elRef;
     }
 
     isFacetActive() {
@@ -87,6 +92,10 @@
 
     getActiveFacet() {
         return this.activeFacetCuisine; 
+    }
+
+    getElRef() {
+        return this.elRef;
     }
 
     showMoreFacet() {

@@ -18,6 +18,9 @@ export class ContainerComponent implements OnInit {
   @ViewChild('facetCuisineLoadingOverlay',{static:false}) facetCuisineLoadingOverlay;  
   @ViewChild('noResultFound',{static:false}) noResultFound; 
   @ViewChild('toTopButton',{static:false}) toTopButton;
+  @ViewChild('facetCuisineContent',{static:false}) facetCuisineContent; 
+  @ViewChild('facetRatingContent',{static:false}) facetRatingContent; 
+  @ViewChild('facetPaymentContent',{static:false}) facetPaymentContent; 
   
   viewInit: boolean; 
   searchStr: string; 
@@ -123,28 +126,29 @@ export class ContainerComponent implements OnInit {
     this.currentSearch.setPage(this.result.currentPage).search(); 
   }
 
-  refine(container, elRef, facetType, facet) {
+  refine(elRef, facetType, facet) {
     let clazz = elRef.getAttribute("class"); 
     this.result.resetParems(); 
     if (clazz.includes("facet-active")) {
-      this.getFacetByType(facetType).resetParems();
-      container.querySelectorAll(".facet-item:not(.zero-hits)")
+      this.getFacetInstance(facetType).resetParems();
+      this.getFacetDOMContainer(facetType).querySelectorAll(".facet-item:not(.zero-hits)")
       .forEach(item => {
         item.setAttribute("class","facet-item enable"); 
       });
       this.currentSearch.clearRefinements(facetType).search();
     } else {
-      this.getFacetByType(facetType).activateFacet(facet); 
+      this.getFacetInstance(facetType).activateFacet(facet,elRef); 
       elRef.setAttribute("class","facet-item enable facet-active");
-      container.querySelectorAll(".facet-item:not(.facet-active):not(.zero-hits)")
+      this.getFacetDOMContainer(facetType).querySelectorAll(".facet-item:not(.facet-active):not(.zero-hits)")
           .forEach(item => {
             item.setAttribute("class","facet-item disable"); 
           });
       this.currentSearch.toggleFacetRefinement(facetType,facet).search(); 
     }
+
   }
 
-  getFacetByType(type: string) {
+  getFacetInstance(type: string) {
     switch (type) {
       case 'info.food_type': {
         return this.facetCuisine; 
@@ -156,6 +160,34 @@ export class ContainerComponent implements OnInit {
         return this.facetPayment;
       }
     }
+  }
+
+  getFacetDOMContainer(type: string) {
+    switch (type) {
+      case 'info.food_type': {
+        return this.facetCuisineContent.nativeElement; 
+      }
+      case 'info.stars_group': {
+        return this.facetRatingContent.nativeElement; 
+      }
+      case 'payment_options': {
+        return this.facetPaymentContent.nativeElement;
+      }
+    }
+  }
+
+  clearAllFilter() {
+    this.result.resetParems(); 
+    this.facetList.forEach(function(facet) {
+      if (facet.isFacetActive()) {
+        facet.resetParems();
+      }
+    }.bind(this));
+    this.facetCuisine.changeUpdateStatus(true); 
+    this.facetList.forEach(function(facet) {
+      this.currentSearch.clearRefinements(facet.getFacetType()); 
+    }.bind(this)); 
+    this.search();
   }
 
   isThereFacetActive() {

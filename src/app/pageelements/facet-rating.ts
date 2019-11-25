@@ -10,17 +10,21 @@ import { Key } from 'protractor';
      facetRatingToDisplay: object; 
      updateFacetRating: boolean; 
      temp: object; 
+     elRef: any; 
      constructor() {
          this.isFacetRatingActive = false; 
          this.activeFacetRating = -1; 
          this.updateFacetRating = false; 
+         this.elRef = null;
          this.resetFacetToDisplay(); 
      }
 
      resetParems() {
          this.isFacetRatingActive = false; 
          this.activeFacetRating = -1; 
-         this.updateFacetRating = false; 
+         this.updateFacetRating = false;
+         this.elRef.classList.remove("facet-active");
+         this.elRef = null;  
          this.resetFacetToDisplay(); 
      }
 
@@ -40,9 +44,10 @@ import { Key } from 'protractor';
         }
      }
 
-     activateFacet(facet: number) {
+     activateFacet(facet: number, elRef: any) {
          this.isFacetRatingActive = true; 
          this.activeFacetRating = facet; 
+         this.elRef = elRef;
      }
 
      isFacetActive() {
@@ -59,6 +64,10 @@ import { Key } from 'protractor';
 
      getActiveFacet() {
          return this.activeFacetRating; 
+     }
+
+     getElRef() {
+         return this.elRef; 
      }
 
      resetFacetToDisplay() {

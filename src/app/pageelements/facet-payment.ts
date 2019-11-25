@@ -7,15 +7,19 @@
      activeFacetPayment: string; 
      facetPaymentToDisplay: object; 
      temp: object; 
+     elRef: any; 
      constructor() {
          this.isFacetPaymentActive = false; 
          this.activeFacetPayment = ''; 
          this.resetFacetToDisplay(); 
+         this.elRef = null; 
      }
 
      resetParems() {
          this.isFacetPaymentActive = false; 
          this.activeFacetPayment =''; 
+         this.elRef.classList.remove("facet-active");
+         this.elRef = null; 
          this.resetFacetToDisplay(); 
      }
 
@@ -35,9 +39,10 @@
         }
      }
 
-     activateFacet(facet: string) {
+     activateFacet(facet: string, elRef: any) {
          this.isFacetPaymentActive = true; 
          this.activeFacetPayment = facet; 
+         this.elRef = elRef; 
      }
 
      isFacetActive() {
@@ -54,6 +59,10 @@
 
      getActiveFacet() {
          return this.activeFacetPayment; 
+     }
+
+     getElRef() {
+         return this.elRef; 
      }
 
      resetFacetToDisplay() {

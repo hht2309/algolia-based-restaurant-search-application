@@ -14,7 +14,7 @@
                     </div>
                     <div class="facet-cuisine-content">
                         <div #facetCuisineContent class="facet-content">
-                            <div #refEl class="facet-item enable" *ngFor="let facet of objectKeys(facetCuisine.facetCuisineToDisplay)" (click)="refine(facetCuisineContent,refEl,'info.food_type',facet)">
+                            <div #refEl class="facet-item enable" *ngFor="let facet of objectKeys(facetCuisine.facetCuisineToDisplay)" (click)="refine(refEl,'info.food_type',facet)">
                                 <div class="facet-item-name">{{facet}}</div>
                                 <div class="facet-item-numhits">{{facetCuisine.facetCuisineToDisplay[facet]}}</div>
                             </div>
@@ -29,7 +29,7 @@
                         <b class="large-text">Rating</b>
                     </div>
                     <div #facetRatingContent class="facet-content">
-                        <div #refEl (click)="refine(facetRatingContent,refEl,'info.stars_group',key)" [ngClass]="(facetRating.facetRatingToDisplay[key]>0)?['facet-item','enable']:['facet-item','disable','zero-hits']" *ngFor="let key of objectKeys(facetRating.facetRatingToDisplay); let k = index">
+                        <div #refEl (click)="refine(refEl,'info.stars_group',key)" [ngClass]="(facetRating.facetRatingToDisplay[key]>0)?['facet-item','enable']:['facet-item','disable','zero-hits']" *ngFor="let key of objectKeys(facetRating.facetRatingToDisplay); let k = index">
                                 <div class="facet-item-name stars-group">
                                     <div *ngFor="let i of Arr(k+1).fill(1)" class="stars-icon">
                                         <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
@@ -47,7 +47,7 @@
                         <b class="large-text">Payment Options</b>
                     </div>
                     <div #facetPaymentContent class="facet-content">
-                            <div #refEl (click)="refine(facetPaymentContent,refEl,'payment_options',key)" [ngClass]="(facetPayment.facetPaymentToDisplay[key]>0)?['facet-item','enable']:['facet-item','disable']" *ngFor="let key of objectKeys(facetPayment.facetPaymentToDisplay); let k = index">
+                            <div #refEl (click)="refine(refEl,'payment_options',key)" [ngClass]="(facetPayment.facetPaymentToDisplay[key]>0)?['facet-item','enable']:['facet-item','disable']" *ngFor="let key of objectKeys(facetPayment.facetPaymentToDisplay); let k = index">
                                 <div class="facet-item-name">{{key}}</div>
                                 <div class="facet-item-numhits">{{facetPayment.facetPaymentToDisplay[key]}}</div>
                             </div>
@@ -67,16 +67,16 @@
                     <div class="tags-container" *ngIf="isThereFacetActive()">
                         <div *ngFor="let facet of facetList">
                             <div class="tags-item" *ngIf="facet.isFacetActive()">
-                                    <div class="tags-name">{{facet.getFacetCommonName()}}: {{facet.getActiveFacet()}}</div>
-                                    <button type="button" class="tag-delete-button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                        </svg>
-                                    </button>
-                                </div>
+                                <div class="tags-name">{{facet.getFacetCommonName()}}: {{facet.getActiveFacet()}}</div>
+                                <button type="button" class="tag-delete-button" (click)="refine(facet.getElRef(),facet.getFacetType(),facet.getActiveFacet())">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                        <div class="tags-clear-all">Clear all</div>
+                        <div class="tags-clear-all" (click)="clearAllFilter()">Clear all</div>
                     </div>
                     <div #resultLists class="result-lists">
                         <div class="restaurant-hit-container" *ngFor="let restaurant of result.restaurantHits" appHitTimelinePreloader [imgURL]=restaurant.image_url>

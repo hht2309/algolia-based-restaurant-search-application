@@ -14,7 +14,7 @@
                     </div>
                     <div class="facet-cuisine-content">
                         <div #facetCuisineContent class="facet-content">
-                            <div #refEl class="facet-item enable" *ngFor="let facet of objectKeys(facetCuisine.facetCuisineToDisplay)" (click)=refineByCuisine(refEl,facet)>
+                            <div #refEl class="facet-item enable" *ngFor="let facet of objectKeys(facetCuisine.facetCuisineToDisplay)" (click)="refine(facetCuisineContent,refEl,'info.food_type',facet)">
                                 <div class="facet-item-name">{{facet}}</div>
                                 <div class="facet-item-numhits">{{facetCuisine.facetCuisineToDisplay[facet]}}</div>
                             </div>
@@ -28,77 +28,29 @@
                     <div class="facet-title">
                         <b class="large-text">Rating</b>
                     </div>
-                    <div class="facet-content">
-                        <div class="facet-item enable">
+                    <div #facetRatingContent class="facet-content">
+                        <div #refEl (click)="refine(facetRatingContent,refEl,'info.stars_group',key)" [ngClass]="(facetRating.facetRatingToDisplay[key]>0)?['facet-item','enable']:['facet-item','disable','zero-hits']" *ngFor="let key of objectKeys(facetRating.facetRatingToDisplay); let k = index">
                                 <div class="facet-item-name stars-group">
-                                    <div *ngFor="let i of Arr(1).fill(1)" class="stars-icon">
+                                    <div *ngFor="let i of Arr(k+1).fill(1)" class="stars-icon">
                                         <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
                                     </div>
-                                    <div *ngFor="let i of Arr(4).fill(1)" class="stars-icon">
+                                    <div *ngFor="let i of Arr(5-k-1).fill(1)" class="stars-icon">
                                             <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
                                     </div>
                                 </div>
+                                <div class="facet-item-numhits">{{facetRating.facetRatingToDisplay[key]}}</div>
                         </div>
-                        <div class="facet-item enable">
-                                <div class="facet-item-name stars-group">
-                                    <div *ngFor="let i of Arr(2).fill()" class="stars-icon">
-                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
-                                        </div>
-                                        <div *ngFor="let i of Arr(3).fill(1)" class="stars-icon">
-                                                <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="facet-item enable">
-                                <div class="facet-item-name stars-group">
-                                    <div *ngFor="let i of Arr(3).fill(1)" class="stars-icon">
-                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
-                                        </div>
-                                        <div *ngFor="let i of Arr(2).fill(1)" class="stars-icon">
-                                                <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="facet-item enable">
-                                <div class="facet-item-name stars-group">
-                                    <div *ngFor="let i of Arr(4).fill(1)" class="stars-icon">
-                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
-                                        </div>
-                                        <div *ngFor="let i of Arr(1).fill(1)" class="stars-icon">
-                                                <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="facet-item enable">
-                                <div class="facet-item-name stars-group">
-                                    <div *ngFor="let i of Arr(5).fill(1)" class="stars-icon">
-                                            <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
-                                    </div>
-                                </div>
-                        </div>
-                    </div>
+                   </div>
                 </div>
                 <div class="facet-payment">
                     <div class="facet-title">
                         <b class="large-text">Payment Options</b>
                     </div>
-                    <div class="facet-content">
-                        <div class="facet-item enable">
-                            <div class="facet-item-name">AMEX</div>
-                            <div class="facet-item-numhits">70</div>
-                        </div>
-                        <div class="facet-item enable">
-                            <div class="facet-item-name">Discover</div>
-                            <div class="facet-item-numhits">60</div>
-                        </div>
-                        <div class="facet-item enable">
-                            <div class="facet-item-name">MasterCard</div>
-                            <div class="facet-item-numhits">50</div>
-                        </div>
-                        <div class="facet-item enable">
-                            <div class="facet-item-name">Visa</div>
-                            <div class="facet-item-numhits">30</div>
-                        </div>
+                    <div #facetPaymentContent class="facet-content">
+                            <div #refEl (click)="refine(facetPaymentContent,refEl,'payment_options',key)" [ngClass]="(facetPayment.facetPaymentToDisplay[key]>0)?['facet-item','enable']:['facet-item','disable']" *ngFor="let key of objectKeys(facetPayment.facetPaymentToDisplay); let k = index">
+                                <div class="facet-item-name">{{key}}</div>
+                                <div class="facet-item-numhits">{{facetPayment.facetPaymentToDisplay[key]}}</div>
+                            </div>
                     </div>
                 </div>
             </div>

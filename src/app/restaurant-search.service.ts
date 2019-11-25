@@ -24,7 +24,7 @@ export class RestaurantSearchService {
    getHelper() {
     var client = algoliasearch(this.applicationID,this.apiKey);
     var helper = algoliasearchHelper(client, this.restaurantsIndex,{
-      facets: ['info.food_type']
+      facets: ['info.food_type','info.stars_group','payment_options']
     });
     return helper; 
 }

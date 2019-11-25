@@ -3,6 +3,8 @@ import { RestaurantSearchService } from '../restaurant-search.service';
 import { SearchResult } from '../pageelements/result';
 import { FacetCuisine } from '../pageelements/facet-cuisine';
 import { fromEvent} from 'rxjs';
+import { FacetRating } from '../pageelements/facet-rating';
+import { FacetPaymentOption } from '../pageelements/facet-payment';
 
 
 @Component({
@@ -14,9 +16,9 @@ export class ContainerComponent implements OnInit {
 
   @ViewChild('resultLists',{static: false}) resultLists; 
   @ViewChild('facetCuisineLoadingOverlay',{static:false}) facetCuisineLoadingOverlay;  
-  @ViewChild('facetCuisineContent',{static:false}) facetCuisineContent; 
   @ViewChild('noResultFound',{static:false}) noResultFound; 
   @ViewChild('toTopButton',{static:false}) toTopButton;
+  
   viewInit: boolean; 
   searchStr: string; 
   currentSearch: any;
@@ -25,6 +27,9 @@ export class ContainerComponent implements OnInit {
   Arr: any;
   result: any; 
   facetCuisine: any; 
+  facetRating: any; 
+  facetPayment: any; 
+  facetList: any; 
   observerScrollResult: any; 
   subscriberScrollResult: any; 
   constructor(private restaurantSearchService: RestaurantSearchService) {
@@ -35,6 +40,9 @@ export class ContainerComponent implements OnInit {
     this.viewInit = false; 
     this.result = new SearchResult(); 
     this.facetCuisine = new FacetCuisine(); 
+    this.facetRating = new FacetRating(); 
+    this.facetPayment = new FacetPaymentOption(); 
+    this.facetList = [this.facetCuisine, this.facetRating, this.facetPayment]; 
   }
 
   ngOnInit() {
@@ -56,11 +64,11 @@ export class ContainerComponent implements OnInit {
     // get algolia search helper
     this.currentSearch = this.restaurantSearchService.getHelper(); 
     // toggle refinement
-    if  (!this.facetCuisine.isFacetCuisineActive) {
-      this.facetCuisine.facetCuisineToDisplay = {}; 
-    } else {
-      this.currentSearch.toggleFacetRefinement('info.food_type',this.facetCuisine.activeFacetCuisine); 
-    }
+    this.facetList.forEach(function(facet) {
+      if (facet.isFacetActive()) {
+        this.currentSearch.toggleFacetRefinement(facet.getFacetType(),facet.getActiveFacet()); 
+      }
+    }.bind(this))
     // on search callback 
     this.currentSearch.on('search',function(content) {
       if (this.viewInit) {
@@ -88,6 +96,8 @@ export class ContainerComponent implements OnInit {
       if (!this.result.isLoadMore) {
         // if search is not load more, update facet
         this.facetCuisine.update(this.result.numHits, content);
+        this.facetRating.update(content); 
+        this.facetPayment.update(content); 
         if (this.result.numHits==0) {
           this.noResultFound.nativeElement.style.display = "block";
         } 
@@ -100,9 +110,9 @@ export class ContainerComponent implements OnInit {
       setTimeout(function() {
         if (this.facetCuisine.updateFacetCuisine && !this.isFacetCuisineActive) {
           this.facetCuisineLoadingOverlay.nativeElement.style.zIndex = "-1";
-          this.updateFacetCuisine = false; 
+          this.facetCuisine.changeUpdateStatus(false); 
         }
-      }.bind(this),500);
+      }.bind(this),400);
     }.bind(this))
     this.currentSearch.setQuery(this.searchStr).setQueryParameter('hitsPerPage',3).setPage(this.result.currentPage).search(); 
   }
@@ -113,26 +123,38 @@ export class ContainerComponent implements OnInit {
     this.currentSearch.setPage(this.result.currentPage).search(); 
   }
 
-  refineByCuisine(elRef, facet) {
+  refine(container, elRef, facetType, facet) {
     let clazz = elRef.getAttribute("class"); 
     this.result.resetParems(); 
     if (clazz.includes("facet-active")) {
-      this.facetCuisine.resetParems(); 
-      this.facetCuisineContent.nativeElement
-      .querySelectorAll(".facet-item")
+      this.getFacetByType(facetType).resetParems();
+      container.querySelectorAll(".facet-item:not(.zero-hits)")
       .forEach(item => {
         item.setAttribute("class","facet-item enable"); 
       });
-      this.currentSearch.clearRefinements('info.food_type').search();
+      this.currentSearch.clearRefinements(facetType).search();
     } else {
-      this.facetCuisine.activateFacet(facet); 
+      this.getFacetByType(facetType).activateFacet(facet); 
       elRef.setAttribute("class","facet-item enable facet-active");
-      this.facetCuisineContent.nativeElement
-          .querySelectorAll(".facet-item:not(.facet-active)")
+      container.querySelectorAll(".facet-item:not(.facet-active):not(.zero-hits)")
           .forEach(item => {
             item.setAttribute("class","facet-item disable"); 
           });
-      this.currentSearch.toggleFacetRefinement('info.food_type',this.facetCuisine.activeFacetCuisine).search(); 
+      this.currentSearch.toggleFacetRefinement(facetType,facet).search(); 
+    }
+  }
+
+  getFacetByType(type: string) {
+    switch (type) {
+      case 'info.food_type': {
+        return this.facetCuisine; 
+      }
+      case 'info.stars_group': {
+        return this.facetRating; 
+      }
+      case 'payment_options': {
+        return this.facetPayment;
+      }
     }
   }
 

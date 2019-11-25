@@ -36,6 +36,7 @@
             }.bind(this)); 
             // initialize facet cuisine to display
             if (!this.isFacetCuisineActive) {
+                this.facetCuisineToDisplay = {}; 
                 let bound: number; 
                 if (this.facetNameInDescendingOrder.length>this.facetCuisinePerPage) {
                     this.showMore = true; 
@@ -70,6 +71,18 @@
     activateFacet(facet: string) {
         this.isFacetCuisineActive = true; 
         this.activeFacetCuisine = facet; 
+    }
+
+    isFacetActive() {
+        return this.isFacetCuisineActive; 
+    }
+
+    getFacetType() {
+        return 'info.food_type'; 
+    }
+
+    getActiveFacet() {
+        return this.activeFacetCuisine; 
     }
 
     showMoreFacet() {

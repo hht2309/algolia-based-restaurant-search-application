@@ -158,6 +158,14 @@ export class ContainerComponent implements OnInit {
     }
   }
 
+  isThereFacetActive() {
+    let ans = false; 
+    this.facetList.forEach(function(facet) {
+        ans = ans || facet.isFacetActive(); 
+    }.bind(this)); 
+    return ans; 
+  }
+
   scrollToTop() {
     this.resultLists.nativeElement.firstElementChild.scrollIntoView({ behavior: 'smooth' });
   }

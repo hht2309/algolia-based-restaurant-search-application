@@ -17,7 +17,7 @@
  
 
 .container {
-    height: 660px;
+    height: 670px;
     width: 1200px;
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -98,7 +98,7 @@
 
 .facet-cuisine-content {
     max-height: 90%;
-    overflow: auto;
+    result-lists: auto;
 }
 
 .facet-rating {
@@ -261,6 +261,60 @@
 
 .tags-container {
     height: 25px;
+    margin-top: 5px;
+    display: flex; 
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.tags-item {
+    display: flex; 
+    flex-direction: row;
+    background-color: rgb(50, 137, 187);
+    padding: 3px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.tags-name {
+    display: inline-flex; 
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+}
+
+.tag-delete-button{
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+    line-height: inherit;
+    /* width: 24px;
+    height: 24px; */
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    color: inherit;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    background: none;
+    border-left: 1px solid rgb(94, 94, 94);
+}
+
+.tags-clear-all{
+    color: rgb(50, 137, 187);
+    display: inline-flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.tags-clear-all:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .restaurant-hit {

@@ -81,6 +81,10 @@
         return 'info.food_type'; 
     }
 
+    getFacetCommonName() {
+        return 'Cuisine/Food type'; 
+    }
+
     getActiveFacet() {
         return this.activeFacetCuisine; 
     }

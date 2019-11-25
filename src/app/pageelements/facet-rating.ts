@@ -53,6 +53,10 @@ import { Key } from 'protractor';
          return 'info.stars_group'; 
      }
 
+     getFacetCommonName() {
+        return 'Rating'; 
+    }
+
      getActiveFacet() {
          return this.activeFacetRating; 
      }

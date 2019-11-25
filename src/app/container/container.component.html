@@ -56,9 +56,6 @@
             </div>
         </div>
         <div class="right">
-            <div #resultLoadingOverlay class="loading-overlay">
-                    <div class="lds-ring active"><div></div><div></div><div></div><div></div></div>
-            </div>
             <div id="results">
                 <div class="display-results">
                     <div class="search-stats">
@@ -67,7 +64,20 @@
                         </div>
                         <div class="search-stats-line"></div>
                     </div>
-                    <div class="tags-container"></div>
+                    <div class="tags-container" *ngIf="isThereFacetActive()">
+                        <div *ngFor="let facet of facetList">
+                            <div class="tags-item" *ngIf="facet.isFacetActive()">
+                                    <div class="tags-name">{{facet.getFacetCommonName()}}: {{facet.getActiveFacet()}}</div>
+                                    <button type="button" class="tag-delete-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                        </div>
+                        <div class="tags-clear-all">Clear all</div>
+                    </div>
                     <div #resultLists class="result-lists">
                         <div class="restaurant-hit-container" *ngFor="let restaurant of result.restaurantHits" appHitTimelinePreloader [imgURL]=restaurant.image_url>
                             <div class="restaurant-hit">

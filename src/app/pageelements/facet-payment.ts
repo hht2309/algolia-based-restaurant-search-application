@@ -48,6 +48,10 @@
          return 'payment_options'; 
      }
 
+     getFacetCommonName() {
+        return 'Payment options'; 
+    }
+
      getActiveFacet() {
          return this.activeFacetPayment; 
      }

@@ -422,10 +422,10 @@
     display: flex; 
     align-items: center;
     justify-content: center;
+    color: orange;
 }
 
 .fa.fa-star {
-    color: orange;
     font-size: 130%;
 }
 

@@ -25,6 +25,7 @@
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: stretch;
+    transition: height .3s; 
 }
 
 .header {
@@ -202,6 +203,7 @@
     flex-direction: column;
     max-height: 450px;
     overflow: auto;
+    border-top: 1px solid #ccc;
 }
 
 .no-result-found {

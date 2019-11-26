@@ -31,12 +31,18 @@
                     <div #facetRatingContent class="facet-content">
                         <div #refEl (click)="refine(refEl,'info.stars_group',key)" [ngClass]="(facetRating.facetRatingToDisplay[key]>0)?['facet-item','enable']:['facet-item','disable','zero-hits']" *ngFor="let key of objectKeys(facetRating.facetRatingToDisplay); let k = index">
                                 <div class="facet-item-name stars-group">
-                                    <div *ngFor="let i of Arr(k+1).fill(1)" class="stars-icon">
+                                        <div class="stars-icon-facet" *ngFor="let i of Arr(Math.round(k+1)).fill(1)">
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="stars-icon-facet" *ngFor="let i of Arr(Math.round(5-k-1)).fill(1)">
+                                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        </div>
+                                    <!-- <div *ngFor="let i of Arr(k+1).fill(1)" class="stars-icon">
                                         <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
                                     </div>
                                     <div *ngFor="let i of Arr(5-k-1).fill(1)" class="stars-icon">
                                             <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="facet-item-numhits">{{facetRating.facetRatingToDisplay[key]}}</div>
                         </div>
@@ -93,14 +99,22 @@
                                         <div class="stars-count">
                                             {{restaurant.info.stars_count}}
                                         </div>
-                                        <div *ngFor="let i of Arr(Math.round(restaurant.info.stars_count
+                                        <div class="stars-icon" *ngFor="let i of Arr(Math.round(restaurant.info.stars_count
+                                        )).fill(1)">
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="stars-icon" *ngFor="let i of Arr(5 - Math.round(restaurant.info.stars_count
+                                        )).fill(1)">
+                                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        </div>
+                                        <!-- <div *ngFor="let i of Arr(Math.round(restaurant.info.stars_count
                                         )).fill(1)" class="stars-icon">
                                             <img style="max-width:100%;max-height:100%" src="/assets/graphics/stars-plain.png"/>
                                         </div>
                                         <div *ngFor="let i of Arr(5 - Math.round(restaurant.info.stars_count
                                         )).fill(1)" class="stars-icon">
                                             <img style="max-width:100%;max-height:100%" src="/assets/graphics/star-empty.png"/>
-                                        </div>
+                                        </div> -->
                                         <div class="reviews-count">
                                             ({{restaurant.info.reviews_count}} reviews)
                                         </div>

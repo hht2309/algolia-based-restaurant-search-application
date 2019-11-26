@@ -1,4 +1,4 @@
-<div class="container">
+<div [style.height]="isThereFacetActive()?'680px':'660px'" class="container">
     <div class="header">
         <input [(ngModel)]="searchStr" (keyup)=search() autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text" name="searchStr" class="search-input" placeholder="Search for Restaurants by Name, Cuisine, Location"/>
     </div>
@@ -78,7 +78,7 @@
                         </div>
                         <div class="tags-clear-all" (click)="clearAllFilter()">Clear all</div>
                     </div>
-                    <div #resultLists class="result-lists">
+                    <div [style.margin-top]="isThereFacetActive()?'0px':'25px'" #resultLists class="result-lists">
                         <div class="restaurant-hit-container" *ngFor="let restaurant of result.restaurantHits" appHitTimelinePreloader [imgURL]=restaurant.image_url>
                             <div class="restaurant-hit">
                                 <div class="thumbnail-container" appImageLoader [imgURL]=restaurant.image_url>

@@ -133,15 +133,17 @@ export class ContainerComponent implements OnInit {
       this.getFacetInstance(facetType).resetParems();
       this.getFacetDOMContainer(facetType).querySelectorAll(".facet-item:not(.zero-hits)")
       .forEach(item => {
-        item.setAttribute("class","facet-item enable"); 
+        item.classList.remove("disable"); 
+        item.classList.add("enable"); 
       });
       this.currentSearch.clearRefinements(facetType).search();
     } else {
       this.getFacetInstance(facetType).activateFacet(facet,elRef); 
-      elRef.setAttribute("class","facet-item enable facet-active");
+      elRef.classList.add("facet-active");
       this.getFacetDOMContainer(facetType).querySelectorAll(".facet-item:not(.facet-active):not(.zero-hits)")
           .forEach(item => {
-            item.setAttribute("class","facet-item disable"); 
+            item.classList.remove("enable"); 
+            item.classList.add("disable"); 
           });
       this.currentSearch.toggleFacetRefinement(facetType,facet).search(); 
     }
@@ -183,6 +185,8 @@ export class ContainerComponent implements OnInit {
         facet.resetParems();
       }
     }.bind(this));
+    this.facetCuisineContent.nativeElement.querySelector(".see-more-facet").classList.remove("disable"); 
+    this.facetCuisineContent.nativeElement.querySelector(".see-more-facet").classList.add("enable"); 
     this.facetCuisine.changeUpdateStatus(true); 
     this.facetList.forEach(function(facet) {
       this.currentSearch.clearRefinements(facet.getFacetType()); 

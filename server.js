@@ -14,13 +14,15 @@ var options = {
 
 // Point static path to dist
 app.use (function (req, res, next) {
-  if (req.secure) {
-          // request was via https, so do no special handling
-          next();
-  } else {
-          // request was via http, so redirect to https
-          res.redirect('https://' + req.headers.host + req.url);
-  }
+        next(); 
+//Activate this code if using https        
+//   if (req.secure) {
+//           // request was via https, so do no special handling
+//           next();
+//   } else {
+//           // request was via http, so redirect to https
+//           res.redirect('https://' + req.headers.host + req.url);
+//   }
 });
 
 app.use(express.static(path.join(__dirname, 'dist/angularApp/'))); 
@@ -31,10 +33,9 @@ app.use(express.static(path.join(__dirname, 'dist/angularApp/')));
 
 
 // Create https-server
-https.createServer(options, app).listen(443);
+// https.createServer(options, app).listen(443);
 
-// Redirect from http port 80 to https
+var port = 8080; 
 var http = require('http');
-http.createServer(app).listen(80); 
-
-console.log("Server started at localhost"); 
+http.createServer(app).listen(port); 
+console.log("Application is available at localhost port " + port); 

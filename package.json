@@ -24,7 +24,7 @@
     "algoliasearch": "^3.35.1",
     "algoliasearch-helper": "^2.28.0",
     "angular-font-awesome": "^3.1.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "font-awesome": "^4.7.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
